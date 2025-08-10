@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ETHMODEL - PORTFOLIO / RAINZY133</title>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#070707;           /* background -  фон — очень тёмный */
+    --fg:#f6f6f6;           /* foreground - основной белый элемент */
+    --muted:#bdbdbd;        /* muted - для теней/подписи */
+    --glass: rgba(255,255,255,0.04);
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* App */
+  .app{
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Navigation */
+  .nav{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+    padding:18px 10px;
+    position:relative;
+    z-index:30;
+  }
+
+  /* Navigation buttons */
+  .nav .btn{
+    background:linear-gradient(#1a1a1a,#0f0f0f);
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--fg);
+    padding:10px 18px;
+    font-weight:600;
+    letter-spacing:1px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 2px 0 rgba(255,255,255,0.03) inset;
+  }
+  .nav .btn:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(255,255,255,0.03); }
+
+  /* Content wrappers for pages (centering) */
+  .main-screen, .works-screen{
+    flex:1;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  /* Greeting block */
+  .hero{
+    width:min(900px,92%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow:0 8px 20px rgba(0,0,0,0.7);
+    padding:46px 36px;
+    text-align:center;
+    border-radius:6px;
+    backdrop-filter: blur(2px);
+    z-index:20;
+  }
+
+  .hero h1{
+    margin:0 0 14px;
+    font-family: "Playfair Display", serif;
+    font-weight:700;
+    font-size:42px;
+    letter-spacing:1px;
+    color:var(--fg);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.6);
+  }
+
+  .hero p.lead{
+    margin:0 0 20px;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.45;
+  }
+
+  .hero .controls{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    align-items:center;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+
+  .cta{
+    background:linear-gradient(#f6f6f6,#e9e9e9);
+    color:#111;
+    padding:10px 18px;
+    border-radius:6px;
+    border:1px solid rgba(0,0,0,0.15);
+    font-weight:700;
+    cursor:pointer;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+  }
+  .cta:hover{ transform:translateY(-3px); transition:all .12s ease; }
+
+  /* Socials */
+  .socials{ display:flex; gap:10px; align-items:center; margin-left:6px; }
+  .socials a{
+    width:36px;height:36px;display:inline-grid;place-items:center;border-radius:6px;
+    background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--fg);text-decoration:none;
+  }
+  .socials svg{ width:18px;height:18px; opacity:0.95; }
+
+  /* Background shapes */
+  .shape {
+    position:absolute;
+    filter:brightness(1.05) contrast(1.05);
+    opacity:0.95;
+    mix-blend-mode:screen; /* чтобы быть видимыми на черном */
+  }
+  .shape.ascii-left{ left:4%; top:12%; width:220px; transform:translateY(-10%); opacity:0.9; }
+  .shape.ascii-topright{ right:6%; top:6%; width:240px; opacity:0.9; }
+  .shape.ascii-bottom{ right:10%; bottom:6%; width:220px; opacity:0.92; }
+
+  /* Model Astronaut */
+  .astronaut {
+    position:absolute;
+    right:6%;
+    bottom:14%;
+    width:260px;
+    z-index:15;
+    transform-origin:center;
+    will-change:transform;
+    animation:float 4.5s ease-in-out infinite;
+    opacity:0.98;
+    mix-blend-mode:screen;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) }
+    50% { transform: translateY(-18px) }
+    100% { transform: translateY(0) }
+  }
+
+  /* Eth falling 10s*/
+  .comet {
+    position:absolute;
+    left:-20%;
+    top:12%;
+    width:110px;
+    z-index:25;
+    transform-origin:center;
+    will-change:transform, opacity;
+    animation:comet-move 10s linear infinite;
+    filter:drop-shadow(0 6px 18px rgba(255,255,255,0.06));
+    opacity:0.65;
+    mix-blend-mode:screen;
+  }
+
+  @keyframes comet-move {
+    0% { transform: translateX(-40vw) translateY(0) rotate(-30deg) scale(.9); opacity:0;}
+    6% { opacity:1; }
+    50% { transform: translateX(120vw) translateY(6vh) rotate(-30deg) scale(1.05); opacity:1; }
+    95% { opacity:0.2; }
+    100% { transform: translateX(220vw) translateY(10vh) rotate(-30deg) scale(.9); opacity:0; }
+  }
+
+  /* My Works Page*/
+  .works-grid{
+    width:100%;
+    max-width:1200px;
+    padding:36px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
+    z-index:20;
+  }
+
+  .work {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.06);
+    padding:12px;
+    border-radius:8px;
+    text-align:left;
+  }
+
+  .work img{
+    width:100%;
+    height: 320px;
+    object-fit:cover;
+    border-radius:6px;
+    background:linear-gradient(180deg,#111,#333);
+    display:block;
+    margin-bottom:10px;
+    mix-blend-mode:screen;
+  }
+
+  .work h3{ margin:0 0 8px; font-size:16px; color:var(--fg); font-weight:700; }
+  .work p{ margin:0 0 10px; color:var(--muted); font-size:13px; line-height:1.3; }
+
+  .review{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .review textarea{
+    flex:1;
+    min-height:68px;
+    background:transparent;
+    border:1px dashed rgba(255,255,255,0.04);
+    color:var(--fg);
+    padding:8px;
+    border-radius:6px;
+    resize:vertical;
+    font-size:13px;
+  }
+  .review button{
+    background:var(--fg);
+    color:#111;
+    border-radius:6px;
+    border:0;
+    padding:10px 12px;
+    cursor:pointer;
+    font-weight:600;
+  }
+
+  /* мобильные правки */
+  @media (max-width:700px){
+    .hero h1{ font-size:28px; }
+    .astronaut{ width:160px; right:6%; bottom:6%; }
+    .comet{ display:none; } /* на мобильных отключим комету для читабельности */
+  }
+
+   .socials {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .socials a svg {
+    width: 24px;
+    height: 24px;
+    color: currentColor;
+  }
+  .socials a:hover svg {
+    color: #1da1f2; /* Можно заменить на нужный цвет при наведении */
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Главное меню">
+    <button class="btn" data-target="home">Главная</button>
+    <button class="btn" data-target="works">Мои работы</button>
+  </nav>
+
+  <!-- MAIN SCREEN -->
+  <main class="main-screen screen" id="homeScreen" aria-hidden="false">
+    <!-- стилизованные "фигурки" -->
+    <!-- можно заменить на ASCII-пng/ svg с белой заливкой -->
+    <!-- <img src="#" alt="" class="shape ascii-left" />
+    <img src="#" alt="" class="shape ascii-topright" />
+    <img src="#" alt="" class="shape ascii-bottom" /> !-->
+
+    <!-- astronaut model -->
+    <img src="models/astro.png" alt="astronaut" class="astronaut" />
+
+    <!-- eth model -->
+    <img src="models/eth.png" alt="comet" class="comet" />
+
+    <!-- central block-->
+    <section class="hero" role="region" aria-label="Приветствие">
+      <h1>Small enough to listen, bold enough to lead</h1>
+      <p class="lead">Добро пожаловать — я создаю лаконичные, выразительные цифровые работы в любом эстетическом стиле. Нажми кнопку ниже, либо нажми на кнопочку "W" чтобы перейти к моим проектам.</p>
+
+      <div class="controls">
+        <button class="cta" id="toWorks">Мои работы</button>
+
+      <div class="socials" aria-label="Социальные сети">
+        <!-- FunPay -->
+        <a href="https://funpay.com/en/users/4675770/" title="FunPay" aria-label="FunPay">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="9" stroke-width="1.4"/>
+      <text x="12" y="15" text-anchor="middle" font-size="10" font-weight="bold" font-family="sans-serif" fill="currentColor" stroke="none">F</text>
+    </svg>
+  </a>
+
+  <!-- Telegram -->
+  <a href="https://t.me/ethmodel" title="Telegram" aria-label="Telegram">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path d="M22 2L11 13" stroke-width="1.4"/>
+      <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke-width="1.4"/>
+    </svg>
+  </a>
+
+  <!-- Telegram Channel -->
+  <a href="https://t.me/ethereumtlaw" title="Telegram Channel" aria-label="Telegram Channel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <circle cx="12" cy="12" r="10" stroke-width="1.4"/>
+      <path d="M8 12l8-4-2 8-2-3-4-1z" stroke-width="1.4"/>
+    </svg>
+  </a>
+</div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- WORKS SCREEN -->
+  <section class="works-screen screen" id="worksScreen" aria-hidden="true" style="display:none;">
+    <div style="position:absolute;left:16px;top:10px;z-index:40;color:var(--muted);font-size:13px;">Мои работы</div>
+
+    <div class="works-grid" role="list">
+      <!-- Work example -->
+      <article class="work" role="listitem">
+        <img src="./works/ethmodel.png" alt="Работа 1 " />
+        <h3>EthModel</h3>
+        <p>Личная работа для портфолио</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+      <article class="work" role="listitem">
+        <img src="./works/collapsetg.png" alt="Работа 2 " />
+        <h3>Collapse - TG АВАТАРКА</h3>
+        <p>Collapse - Создан дизайн для телеграмм</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+      <article class="work" role="listitem">
+        <img src="./works/eth4200copy2withmysign.png" alt="Работа 3 (заглушка)" />
+        <h3>ETHMODEL - 4200$ ETH</h3>
+        <p>Личная работа для портфолио</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+      <article class="work" role="listitem">
+        <img src="./works/silentmercy.jpg" alt="Работа 4 (заглушка)" />
+        <h3>SILENTMERCY - PUBG ЛОГО</h3>
+        <p>Лого для киберспортивной команды</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+      <article class="work" role="listitem">
+        <img src="./works/sui.png" alt="Работа 5 (заглушка)" />
+        <h3>СУИЦИДНЫЙ - TG СИГНА</h3>
+        <p>Разработана сигна на базе запросов покупателя</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+      <article class="work" role="listitem">
+        <img src="./works/collapsestarsbot.png" alt="Работа 6 (заглушка)" />
+        <h3>COLLAPSESTARS_BOT - TG АВАТАРКА ДЛЯ БОТА </h3>
+        <p>Разработана аватарка для бота, который продает звезды телеграмм</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+      <article class="work" role="listitem">
+        <img src="./works/assistteam.jpg" alt="Работа 7 (заглушка)" />
+        <h3>ASSISTTEAM- TG АВАТАРКА ДЛЯ ТИМЫ </h3>
+        <p>Разработана аватарка для команды воркеров</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+      <article class="work" role="listitem">
+        <img src="./works/l1p1stok.png" alt="Работа 8 (заглушка)" />
+        <h3>L1P1STOK- TG СИГНА </h3>
+        <p>Разработана сигна по запросам клиента</p>
+        <div class="review">
+          <textarea placeholder="Оставить отзыв..."></textarea>
+          <button>Отправить</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Навигация — переключение экранов без перезагрузки
+  const navBtns = document.querySelectorAll('.nav .btn');
+  const homeScreen = document.getElementById('homeScreen');
+  const worksScreen = document.getElementById('worksScreen');
+  const toWorksBtn = document.getElementById('toWorks');
+
+  function show(screen){
+    if(screen === 'home'){
+      homeScreen.style.display = '';
+      homeScreen.setAttribute('aria-hidden','false');
+      worksScreen.style.display = 'none';
+      worksScreen.setAttribute('aria-hidden','true');
+      window.scrollTo({top:0, behavior:'smooth'});
+    } else {
+      homeScreen.style.display = 'none';
+      homeScreen.setAttribute('aria-hidden','true');
+      worksScreen.style.display = '';
+      worksScreen.setAttribute('aria-hidden','false');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  }
+
+  navBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=> show(btn.dataset.target));
+  });
+
+  toWorksBtn.addEventListener('click', ()=> show('works'));
+
+  // Automatic image check
+  function checkImg(el, fallbackSVG){
+    if(!el) return;
+    el.addEventListener('error', ()=> {
+      el.style.objectFit = 'contain';
+      el.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(fallbackSVG);
+    });
+  }
+
+  const fallback = `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%' height='100%' fill='#0b0b0b'/><g fill='#e9e9e9' font-family='sans-serif' font-size='20'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'>placeholder</text></g></svg>`;
+
+  document.querySelectorAll('img').forEach(img=>{
+    checkImg(img, fallback);
+  });
+
+  // Sending feedback/automatic checking
+  document.querySelectorAll('.review button').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const ta = e.currentTarget.parentElement.querySelector('textarea');
+      if(ta && ta.value.trim().length>0){
+        alert('Спасибо! Отзыв отправлен (локально).');
+        ta.value='';
+      } else {
+        alert('Напишите, пожалуйста, текст отзыва.');
+      }
+    });
+  });
+
+  // Умная оптимизация: остановим анимацию эфирчика при потере таба
+  const comet = document.querySelector('.comet');
+  let cometRunning = true;
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden){
+      if(comet) comet.style.animationPlayState = 'paused';
+    } else {
+      if(comet) comet.style.animationPlayState = 'running';
+    }
+  });
+
+  // Поддержка клавиш: H для главной, W для работ
+  document.addEventListener('keydown', (e)=>{
+    if(e.key.toLowerCase()==='h') show('home');
+    if(e.key.toLowerCase()==='w') show('works');
+  });
+
+</script>
+</body>
+</html>
